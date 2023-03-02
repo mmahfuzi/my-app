@@ -2,21 +2,27 @@ import React, { useEffect, useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.css';
 
-function App() {
+export const App: React.FC = () => {
   const [giveUp, setGiveUp] = useState(false);
-  const [input, setInput] = useState<number[]>([]);
+  const [inputs, setInputs] = useState<number[]>([]);
   const [newInput, setNewInput] = useState<number>();
   const [error, setError] = useState(false);
 
   const addNewInput = () => {
     if (newInput) {
-      setInput([...input, newInput])
+      setInputs([...inputs, newInput])
     }
   }
 
+  function sort_array_randomly() {
+ 
+    return +([1,2,3,4,5,6,7,8,9].sort((a, b) => Math.random() - 0.5).slice(0,4).join(''));
+      
+  }
 
   useEffect(() => {
-    const  randomNumber = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
+    const randomNumber = sort_array_randomly();
+
   }, [giveUp])
 
   return (
@@ -24,6 +30,7 @@ function App() {
       <header className="App-header">
         Let's play 
       </header>
+
       <form>
         <input
           type="text"
@@ -48,10 +55,21 @@ function App() {
           onClick={() => {setGiveUp(true)}}
           >
             Give Up!
-          </button>
-      </form>
-      <p>{newInput}</p>
+        </button>
 
+        {(inputs.length>0 && !error) && (
+          <div>
+            <p>INPUT</p>
+            {inputs.map(input => (
+              <p>{input}</p>
+            ))}
+          </div>
+        )}
+
+        
+      </form>
+
+      
       {error && (
         <div
         className='notification is-danger is-light has-text-weight-normal'
@@ -65,8 +83,11 @@ function App() {
       </div>
       )}
 
-    </div>
-  );
-}
+      <figure className='figure image is-128x128'>
+        <img className='is-rounded' src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/4b5e1c15227903.5628e65346842.png" alt=''/>
+      </figure>
 
-export default App;
+    </div>
+    
+  );
+};

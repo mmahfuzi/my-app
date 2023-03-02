@@ -43,3 +43,9 @@
   margin-right: 5px;
 }
 
+.figure {
+  display: inline-block;
+  align-content: center;
+  margin-top: 200px;
+}
+
