@@ -1,5 +1,6 @@
-.html {
+.body {
   background-color: beige;
+  height: 100vh;
 }
 
 .App {
@@ -29,7 +30,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .App-link {
@@ -53,8 +54,9 @@
 .figure {
   display: inline-block;
   align-content: center;
-  margin-top: 24vh;
+  margin-top: 34vh;
   size: 500px;
+  margin: auto;
 }
 
 .row {
@@ -91,3 +93,15 @@
   font-size: 18px;
 }
 
+.notif {
+  width: 500px;
+  display: inline-block;
+  justify-content: center;
+  align-content: center;
+}
+
+.start {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}

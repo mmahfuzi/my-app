@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.css';
+import classnames from 'classnames';
 
 export const App: React.FC = () => {
   const [inputs, setInputs] = useState<string[]>([]);
@@ -12,7 +13,11 @@ export const App: React.FC = () => {
   const [errormsg, setErrormsg] = useState('');
   const [bulls, setBulls] = useState<number>(0);
   const [cows, setCows] = useState<number>(0);
-  const [won, setWon] = useState(false)
+  const [won, setWon] = useState(false);
+  const [lost, setLost] = useState(false)
+  const [tries, setTries] = useState(7);
+  const [counter, setCounter] = useState(true);
+  const [start, setStart] = useState(true);
 
   const addNewInput = () => {
     if (newInput) {
@@ -26,17 +31,20 @@ export const App: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
      event.preventDefault();
-     if (String(newInput)?.length > 4) {
+     if (String(newInput)?.length !== 4) {
       setError(true)
-      setErrormsg('The number should have only 4 digits')
+      setErrormsg('The number should have 4 digits')
     } else if (isNaN(+newInput)) {
       setError(true)
       setErrormsg('Invalid Input')
-    } else { 
+    } else if (tries > 0){ 
       addNewInput();
       compare();
+      setTries(prev => prev - 1)
       // setBulls(0);
       // setCows(0);
+    } else if (tries === 0) {
+      setLost(true);
     }
      
      setNewInput('');
@@ -51,6 +59,9 @@ export const App: React.FC = () => {
     setBulls(0);
     setCows(0);
     setWon(false);
+    setLost(false);
+    setTries(7);
+    setStart(true)
   }
 
   function sort_array_randomly() {
@@ -74,90 +85,127 @@ export const App: React.FC = () => {
       }
     }
   }
+
   return (
-    <div className="App">
-      <header className="App-header" />
-      {/* <p>{secretNumber}</p> */}
-
-      <form onSubmit={handleSubmit}>
-        <div className='form'>
-        <input
-          type="text"
-          placeholder='Enter a 4 digit number'
-          className='input is-normal inputDig is-rounded'
-          value={newInput}
-          onChange={(event) => {
-            setNewInput(event.target.value)
-          }}
-        />
-        <button 
-          type='submit'
-          className="button is-rounded is-info"
-        >
-          GO!
-        </button>
-        <button 
-          type='reset'
-          className="button is-rounded is-danger" 
-          onClick={() => {reset()}}
+    <div className='body'>
+      {!start && (
+        <div className="App">
+        <header className="App-header" />
+        {/* <p>{secretNumber}</p> */}
+  
+        <form onSubmit={handleSubmit}>
+          <div className='form'>
+          <input
+            type="text"
+            placeholder='Enter a 4 digit number'
+            className='input is-normal inputDig is-rounded'
+            value={newInput}
+            onChange={(event) => {
+              setError(false);
+              setNewInput(event.target.value)
+            }}
+          />
+          <button 
+            type='submit'
+            className="button is-rounded is-success"
           >
-            Give Up!
-        </button>
-        </div>
-
-        {won && (
-          <div className='notification is-primary won'>
-           <strong className='strong'>!YOU WON!</strong>
-         </div>
-        )}
-
-        {(inputs.length>0 && !error && !won) && (
-          <div>
-            <div className='row'>
-              <p>
-                <span className='title'>INPUT</span>
-                {inputs.map(input => (
-                   <p className='para'>{input}</p>
-                  ))}
-              </p>
-
-              <p>
-                <span className='title'>BULLS</span>
-                {bullsList.map(bull => (
-                    <p className='para'>{bulls}</p>
-                  ))}
-              </p>
-
-              <p>
-                <span className='title'>COWS</span>
-                {cowsList.map(cow => (
-                    <p className='para'>{cows}</p>
-                  ))}
-              </p>
-            </div>    
+            GO!
+          </button>
+          <button 
+            type='reset'
+            className="button is-rounded is-info" 
+            onClick={() => {reset()}}
+            >
+              Give Up!
+          </button>
           </div>
-        )}
+  
+          {(!won && !lost && counter && tries !== 7)&& (
+            <div className={classnames('notification notif',
+             {'is-info': tries >= 4},
+             {'is-warning':  tries <= 3 && tries >= 2},
+             {'is-danger': tries < 2}
+            )}
+            >
+             <button className="delete" onClick={() => setCounter(false)}></button>
+  
+             {`You have ${tries} more tries`}
+           </div>
+    
+          // <div className='title is-warning'>{`You have ${tries} more tries`}</div>
+          )}
+  
+          {won && (
+            <div className='notification is-primary won'>
+             <strong className='strong'>!YOU WON!</strong>
+           </div>
+          )}
+  
+          {lost && (
+            <div className='notification is-danger won'>
+             <strong className='strong'>!OH YOU LOST!</strong>
+           </div>
+          )}
+  
+          {(inputs.length>0 && !error && !won && !lost) && (
+            <div>
+              <div className='row'>
+                <p>
+                  <span className='title'>INPUT</span>
+                  {inputs.map(input => (
+                     <p className='para'>{input}</p>
+                    ))}
+                </p>
+  
+                <p>
+                  <span className='title'>BULLS</span>
+                  {bullsList.map(bull => (
+                      <p className='para'>{bulls}</p>
+                    ))}
+                </p>
+  
+                <p>
+                  <span className='title'>COWS</span>
+                  {cowsList.map(cow => (
+                      <p className='para'>{cows}</p>
+                    ))}
+                </p>
+              </div>    
+            </div>
+          )}
+          
+        </form>
+  
         
-      </form>
-
-      
-      {error && (
-        <div
-        className='notification is-danger is-light has-text-weight-normal'
-      >
-        <button
-          type="button"
-          className="delete"
-          onClick={() => setError(false)}
-        />
-        {errormsg}
+        {error && (
+          <div
+          className='notification is-danger is-light has-text-weight-normal'
+        >
+          <button
+            type="button"
+            className="delete"
+            onClick={() => setError(false)}
+          />
+          {errormsg}
+        </div>
+        )}
+  
       </div>
       )}
 
-      <figure className='figure image is-128x128'>
-        <img className='is-rounded' src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/4b5e1c15227903.5628e65346842.png" alt=''/>
-      </figure>
+      {start && (
 
+        <div className='start'>
+          
+        <figure className='figure'>
+           <img className='is-rounded' src="https://vmsoft-bg.com/wp-content/uploads/2019/02/Feature-graphic_en.png" alt=''/>
+        </figure>
+
+        <button className='button is-black' onClick={() => {setStart(false)}}>Let's Play</button>
+        </div>
+
+
+      )}
     </div>
     
     
