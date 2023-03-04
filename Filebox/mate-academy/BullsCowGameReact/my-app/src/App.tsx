@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.css';
 import classnames from 'classnames';
+import {Helmet} from "react-helmet";
 
 export const App: React.FC = () => {
   const [inputs, setInputs] = useState<string[]>([]);
@@ -60,7 +61,6 @@ export const App: React.FC = () => {
     setWon(false);
     setLost(false);
     setTries(7);
-    setStart(true)
   }
 
   function sort_array_randomly() {
@@ -89,6 +89,12 @@ export const App: React.FC = () => {
     <div className='body'>
       {!start && (
         <div className="App">
+          <Helmet>
+            <meta charSet="utf-8" />
+            <title>Bulls And Cows Game</title>
+            <link rel="canonical" href="https://mmahfuzi.github.io/my-app/" />
+            <meta name="description" content="bulls and cows game" />
+          </Helmet>
         <header className="App-header" />
         {/* <p>{secretNumber}</p> */}
   
@@ -112,11 +118,20 @@ export const App: React.FC = () => {
           </button>
           <button 
             type='reset'
-            className="button is-rounded is-info" 
+            className="button is-rounded is-link" 
             onClick={() => {reset()}}
             >
               Give Up!
           </button>
+          {lost && (
+            <button 
+            type='reset'
+            className="button is-rounded is-dark" 
+            onClick={() => {reset()}}
+            >
+              Play Again
+          </button>
+          )}
           </div>
   
           {(!won && !lost && counter && tries !== 7)&& (
