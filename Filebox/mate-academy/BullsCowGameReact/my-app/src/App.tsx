@@ -41,8 +41,7 @@ export const App: React.FC = () => {
       addNewInput();
       compare();
       setTries(prev => prev - 1)
-      // setBulls(0);
-      // setCows(0);
+
     } else if (tries === 0) {
       setLost(true);
     }
@@ -131,8 +130,6 @@ export const App: React.FC = () => {
   
              {`You have ${tries} more tries`}
            </div>
-    
-          // <div className='title is-warning'>{`You have ${tries} more tries`}</div>
           )}
   
           {won && (
@@ -194,17 +191,13 @@ export const App: React.FC = () => {
       )}
 
       {start && (
+        <div className='start'>   
+          <figure className='figure'>
+            <img className='is-rounded' src="https://vmsoft-bg.com/wp-content/uploads/2019/02/Feature-graphic_en.png" alt=''/>
+          </figure>
 
-        <div className='start'>
-          
-        <figure className='figure'>
-           <img className='is-rounded' src="https://vmsoft-bg.com/wp-content/uploads/2019/02/Feature-graphic_en.png" alt=''/>
-        </figure>
-
-        <button className='button is-black' onClick={() => {setStart(false)}}>Let's Play</button>
+          <button className='button is-dark is-medium is-rounded' onClick={() => {setStart(false)}}>Let's Play</button>
         </div>
-
-
       )}
     </div>
     

@@ -1,11 +1,10 @@
 .body {
-  background-color: beige;
+  background-color: rgb(220, 215, 205);
   height: 100vh;
 }
 
 .App {
   text-align: center;
-  background-color: beige;
 }
 
 .App-logo {
@@ -21,7 +20,7 @@
 
 .App-header {
   /* background-color: #a02065; */
-  background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/disp/4b5e1c15227903.5628e65346842.png');
+  /* background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/disp/4b5e1c15227903.5628e65346842.png'); */
   background-size: cover, contain;
   min-height: 25vh;
   display: flex;
@@ -30,7 +29,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
 }
 
 .App-link {
