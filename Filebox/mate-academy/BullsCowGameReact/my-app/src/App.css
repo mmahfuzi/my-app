@@ -1,5 +1,10 @@
+.html {
+  background-color: beige;
+}
+
 .App {
   text-align: center;
+  background-color: beige;
 }
 
 .App-logo {
@@ -14,8 +19,10 @@
 }
 
 .App-header {
-  background-color: #2a7d63;
-  min-height: 10vh;
+  /* background-color: #a02065; */
+  background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/disp/4b5e1c15227903.5628e65346842.png');
+  background-size: cover, contain;
+  min-height: 25vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,6 +53,41 @@
 .figure {
   display: inline-block;
   align-content: center;
-  margin-top: 200px;
+  margin-top: 24vh;
+  size: 500px;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.row > span {
+  width: 50px;
+}
+
+.won {
+  margin-top: 20px;
+}
+
+.form {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.strong {
+  font-size: 30px;
+}
+
+.title {
+  font:bold;
+  font-size: 20px;
+}
+
+.para {
+  font-size: 18px;
 }
 

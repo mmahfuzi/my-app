@@ -1,17 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.css';
 
 export const App: React.FC = () => {
-  const [giveUp, setGiveUp] = useState(false);
-  const [inputs, setInputs] = useState<number[]>([]);
-  const [newInput, setNewInput] = useState<number>();
+  const [inputs, setInputs] = useState<string[]>([]);
+  const [cowsList, setCowsList] = useState<number[]>([]);
+  const [bullsList, setBullsList] = useState<number[]>([]);
+  const [newInput, setNewInput] = useState<string>('');
+  const [secretNumber, setSecretNumber] = useState(sort_array_randomly())
   const [error, setError] = useState(false);
+  const [errormsg, setErrormsg] = useState('');
+  const [bulls, setBulls] = useState<number>(0);
+  const [cows, setCows] = useState<number>(0);
+  const [won, setWon] = useState(false)
 
   const addNewInput = () => {
     if (newInput) {
-      setInputs([...inputs, newInput])
+      setInputs([...inputs, newInput]);
+      setBullsList([...bullsList, bulls]);
+      setCowsList([...cowsList, cows]);
+      setBulls(0);
+      setCows(0);
     }
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+     event.preventDefault();
+     if (String(newInput)?.length > 4) {
+      setError(true)
+      setErrormsg('The number should have only 4 digits')
+    } else if (isNaN(+newInput)) {
+      setError(true)
+      setErrormsg('Invalid Input')
+    } else { 
+      addNewInput();
+      compare();
+      // setBulls(0);
+      // setCows(0);
+    }
+     
+     setNewInput('');
+  }
+
+  const reset = () => {
+    setInputs([]);
+    setBullsList([]);
+    setCowsList([]);
+    setNewInput('');
+    setSecretNumber(sort_array_randomly());
+    setBulls(0);
+    setCows(0);
+    setWon(false);
   }
 
   function sort_array_randomly() {
@@ -20,52 +59,84 @@ export const App: React.FC = () => {
       
   }
 
-  useEffect(() => {
-    const randomNumber = sort_array_randomly();
+  const compare = () => {
+    const secret = String(secretNumber);
 
-  }, [giveUp])
-
+    if (+newInput === secretNumber) {
+      setWon(true);
+    }
+  
+    for (let i = 0; i < 4; i++) {
+      if (newInput[i] === secret[i]) {
+        setBulls(prev => prev + 1);
+      } else if (secret.includes(newInput[i])) {
+        setCows(prev => prev + 1);
+      }
+    }
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        Let's play 
-      </header>
+      <header className="App-header" />
+      {/* <p>{secretNumber}</p> */}
 
-      <form>
+      <form onSubmit={handleSubmit}>
+        <div className='form'>
         <input
           type="text"
           placeholder='Enter a 4 digit number'
-          className='input is-normal inputDig'
+          className='input is-normal inputDig is-rounded'
           value={newInput}
-          onChange={(event) => {setNewInput(+event.target.value)}}
+          onChange={(event) => {
+            setNewInput(event.target.value)
+          }}
         />
         <button 
-        className="button"
-        onClick={() => {
-          if (String(newInput)?.length > 4) {
-            setError(true)
-          }
-          addNewInput()
-        }}
+          type='submit'
+          className="button is-rounded is-info"
         >
           GO!
         </button>
         <button 
-          className="button" 
-          onClick={() => {setGiveUp(true)}}
+          type='reset'
+          className="button is-rounded is-danger" 
+          onClick={() => {reset()}}
           >
             Give Up!
         </button>
+        </div>
 
-        {(inputs.length>0 && !error) && (
-          <div>
-            <p>INPUT</p>
-            {inputs.map(input => (
-              <p>{input}</p>
-            ))}
-          </div>
+        {won && (
+          <div className='notification is-primary won'>
+           <strong className='strong'>!YOU WON!</strong>
+         </div>
         )}
 
+        {(inputs.length>0 && !error && !won) && (
+          <div>
+            <div className='row'>
+              <p>
+                <span className='title'>INPUT</span>
+                {inputs.map(input => (
+                   <p className='para'>{input}</p>
+                  ))}
+              </p>
+
+              <p>
+                <span className='title'>BULLS</span>
+                {bullsList.map(bull => (
+                    <p className='para'>{bulls}</p>
+                  ))}
+              </p>
+
+              <p>
+                <span className='title'>COWS</span>
+                {cowsList.map(cow => (
+                    <p className='para'>{cows}</p>
+                  ))}
+              </p>
+            </div>    
+          </div>
+        )}
         
       </form>
 
@@ -79,7 +150,7 @@ export const App: React.FC = () => {
           className="delete"
           onClick={() => setError(false)}
         />
-        The number should have only 4 digits
+        {errormsg}
       </div>
       )}
 
@@ -88,6 +159,7 @@ export const App: React.FC = () => {
       </figure>
 
     </div>
+    
     
   );
 };
