@@ -98,7 +98,7 @@ export const App: React.FC = () => {
             <meta name="description" content="bulls and cows game" />
           </Helmet>
         <header className="App-header" />
-        <p>{secretNumber}</p>
+        {/* <p>{secretNumber}</p> */}
   
         <form onSubmit={handleSubmit}>
           <div className='form'>
