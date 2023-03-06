@@ -3,43 +3,41 @@ import 'bulma/css/bulma.css';
 import './App.css';
 import classnames from 'classnames';
 import {Helmet} from "react-helmet";
+import {Input} from './types/Input'
 
 export const App: React.FC = () => {
-  const [inputs, setInputs] = useState<string[]>([]);
-  const [cowsList, setCowsList] = useState<number[]>([]);
-  const [bullsList, setBullsList] = useState<number[]>([]);
+  const [inputs, setInputs] = useState<Input[]>([]);
   const [newInput, setNewInput] = useState<string>('');
   const [secretNumber, setSecretNumber] = useState(sort_array_randomly())
   const [error, setError] = useState(false);
   const [errormsg, setErrormsg] = useState('');
-  const [bulls, setBulls] = useState<number>(0);
-  const [cows, setCows] = useState<number>(0);
   const [won, setWon] = useState(false);
   const [lost, setLost] = useState(false)
   const [tries, setTries] = useState(7);
   const [counter, setCounter] = useState(true);
   const [start, setStart] = useState(true);
 
-  const addNewInput = () => {
-    if (newInput) {
-      setInputs([...inputs, newInput]);
-      setBullsList([...bullsList, bulls]);
-      setCowsList([...cowsList, cows]);
-      setBulls(0);
-      setCows(0);
+  const checkInput = () => {
+    for (let i = 0; i < newInput.length; i++) {
+      if (newInput[i] === newInput[i+1]) {
+        return false;
+      }
     }
+    return true;
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
      event.preventDefault();
-     if (String(newInput)?.length !== 4) {
+     if (String(newInput)?.length !== 4 && tries > 0) {
       setError(true)
       setErrormsg('The number should have 4 digits')
-    } else if (isNaN(+newInput)) {
+    } else if (isNaN(+newInput) && tries > 0) {
       setError(true)
       setErrormsg('Invalid Input')
+    } else if (!checkInput()) {
+      setError(true)
+      setErrormsg('The digits should be unique')
     } else if (tries > 0){ 
-      addNewInput();
       compare();
       setTries(prev => prev - 1)
 
@@ -52,12 +50,8 @@ export const App: React.FC = () => {
 
   const reset = () => {
     setInputs([]);
-    setBullsList([]);
-    setCowsList([]);
     setNewInput('');
     setSecretNumber(sort_array_randomly());
-    setBulls(0);
-    setCows(0);
     setWon(false);
     setLost(false);
     setTries(7);
@@ -71,18 +65,26 @@ export const App: React.FC = () => {
 
   const compare = () => {
     const secret = String(secretNumber);
+    const obj = {
+      input: newInput,
+      bull: 0,
+      cow: 0,
+    }
 
     if (+newInput === secretNumber) {
       setWon(true);
     }
-  
+    
     for (let i = 0; i < 4; i++) {
       if (newInput[i] === secret[i]) {
-        setBulls(prev => prev + 1);
+        obj.bull++;
       } else if (secret.includes(newInput[i])) {
-        setCows(prev => prev + 1);
+        obj.cow++;
       }
     }
+
+    setInputs([...inputs, obj])
+
   }
 
   return (
@@ -96,7 +98,7 @@ export const App: React.FC = () => {
             <meta name="description" content="bulls and cows game" />
           </Helmet>
         <header className="App-header" />
-        {/* <p>{secretNumber}</p> */}
+        <p>{secretNumber}</p>
   
         <form onSubmit={handleSubmit}>
           <div className='form'>
@@ -123,7 +125,7 @@ export const App: React.FC = () => {
             >
               Give Up!
           </button>
-          {lost && (
+          {(lost || won) && (
             <button 
             type='reset'
             className="button is-rounded is-dark" 
@@ -159,30 +161,20 @@ export const App: React.FC = () => {
            </div>
           )}
   
-          {(inputs.length>0 && !error && !won && !lost) && (
+          {(inputs.length > 0 && !error && !won && !lost) && (
             <div>
-              <div className='row'>
-                <p>
-                  <span className='title'>INPUT</span>
-                  {inputs.map(input => (
-                     <p className='para'>{input}</p>
-                    ))}
-                </p>
-  
-                <p>
-                  <span className='title'>BULLS</span>
-                  {bullsList.map(bull => (
-                      <p className='para'>{bulls}</p>
-                    ))}
-                </p>
-  
-                <p>
-                  <span className='title'>COWS</span>
-                  {cowsList.map(cow => (
-                      <p className='para'>{cows}</p>
-                    ))}
-                </p>
-              </div>    
+              <div className='row'>  
+                <span className='title'>INPUT</span>
+                <span className='title'>BULLS</span>
+                <span className='title'>COWS</span>
+              </div>
+                {inputs.map(input => (
+                  <div className='row'>
+                    <span className='para'>{input.input}</span>
+                    <span className='para'>{input.bull}</span>
+                    <span className='para'>{input.cow}</span>
+                  </div>
+                  ))}  
             </div>
           )}
           
