@@ -12,7 +12,8 @@ export const App: React.FC = () => {
   const [error, setError] = useState(false);
   const [errormsg, setErrormsg] = useState('');
   const [won, setWon] = useState(false);
-  const [lost, setLost] = useState(false)
+  const [lost, setLost] = useState(false);
+  const [gaveup, setGaveup] = useState(false);
   const [tries, setTries] = useState(7);
   const [counter, setCounter] = useState(true);
   const [start, setStart] = useState(true);
@@ -49,6 +50,19 @@ export const App: React.FC = () => {
   }
 
   const reset = () => {
+    setInputs([]);
+    setNewInput('');
+    setSecretNumber(sort_array_randomly());
+    setWon(false);
+    setLost(false);
+    setError(false)
+    setTries(7);
+  }
+
+  const giveup = () => {
+    setError(true)
+    setErrormsg(`The secret number is ${secretNumber}`)
+    setGaveup(true);
     setInputs([]);
     setNewInput('');
     setSecretNumber(sort_array_randomly());
@@ -94,7 +108,7 @@ export const App: React.FC = () => {
           <Helmet>
             <meta charSet="utf-8" />
             <title>Bulls And Cows Game</title>
-            <link rel="canonical" href="https://mmahfuzi.github.io/my-app/" />
+            <link rel="canonical" href="https://mmahfuzi.github.io/" />
             <meta name="description" content="bulls and cows game" />
           </Helmet>
         <header className="App-header" />
@@ -121,11 +135,13 @@ export const App: React.FC = () => {
           <button 
             type='reset'
             className="button is-rounded is-link" 
-            onClick={() => {reset()}}
+            onClick={() => {
+              giveup()
+            }}
             >
               Give Up!
           </button>
-          {(lost || won) && (
+          {(lost || won || gaveup) && (
             <button 
             type='reset'
             className="button is-rounded is-dark" 
@@ -157,8 +173,8 @@ export const App: React.FC = () => {
   
           {lost && (
             <div className='notification is-danger won'>
-             <strong className='strong'>!OH YOU LOST!</strong>
-           </div>
+             <strong className='strong'>{`!OH YOU LOST! The secret number is ${secretNumber}`}</strong>
+            </div>
           )}
   
           {(inputs.length > 0 && !error && !won && !lost) && (
